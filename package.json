@@ -1,9 +1,17 @@
 {
   "name": "diagnostico-tlp-ii",
   "version": "1.0.0",
-  "description": "",
+  "description": "Tp 2",
+  "homepage": "https://github.com/escalantehugo65/practica-tasks-escalante-hugo-#readme",
+  "bugs": {
+    "url": "https://github.com/escalantehugo65/practica-tasks-escalante-hugo-/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/escalantehugo65/practica-tasks-escalante-hugo-.git"
+  },
   "license": "ISC",
-  "author": "",
+  "author": "Escalante Hugo",
   "type": "module",
   "main": "index.js",
   "scripts": {
