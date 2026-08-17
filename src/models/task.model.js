@@ -21,19 +21,19 @@ const TaskModel = baseDatos.define(
       defaultValue: false,
     },
     user_id: {
-      type: DataTypes.INTERGER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: "Users",
-        key: "Id",
+        key: "id",
       },
     },
   },
   {},
 );
 
-TaskModel.belongTo(UserModel, { foreignKey: "user_id", as: "author" });
+TaskModel.belongsTo(UserModel, { foreignKey: "user_id", as: "author" });
 
-UserModel.hasmany(TaskModel, { foreignKey: "user_id", as: "tareas" });
+UserModel.hasMany(TaskModel, { foreignKey: "user_id", as: "tareas" });
 
 export { TaskModel };

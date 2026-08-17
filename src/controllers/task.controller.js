@@ -1,8 +1,17 @@
-import { Task } from "../models/task.model.js";
+import { TaskModel } from "../models/task.model.js";
+import { UserModel } from "../models/user.model.js";
 
 export const getTasks = async (req, res) => {
   try {
-    const tasks = await Task.findAll();
+    const tasks = await TaskModel.findAll({
+      include: [
+        {
+          model: UserModel,
+          as: "author",
+          attributes: ["id", "username", "email"], // Ajustá los campos según tu UserModel
+        },
+      ],
+    });
 
     return res.status(200).json(tasks);
   } catch (error) {
@@ -17,7 +26,15 @@ export const getTaskById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const task = await Task.findByPk(id);
+    const task = await TaskModel.findByPk(id, {
+      include: [
+        {
+          model: UserModel,
+          as: "author",
+          attributes: ["id", "username", "email"],
+        },
+      ],
+    });
 
     if (!task) {
       return res.status(404).json({
@@ -36,8 +53,7 @@ export const getTaskById = async (req, res) => {
 
 export const createTask = async (req, res) => {
   try {
-    const { title, description, isComplete } = req.body;
-
+    const { title, description, isComplete, user_id } = req.body;
     if (
       typeof title !== "string" ||
       title.trim() === "" ||
@@ -66,8 +82,22 @@ export const createTask = async (req, res) => {
       });
     }
 
-    // Comprobar title único
-    const existingTask = await Task.findOne({
+    if (!user_id || typeof user_id !== "number") {
+      return res.status(400).json({
+        message: "El user_id es obligatorio y debe ser un número entero",
+      });
+    }
+
+
+    const userExists = await UserModel.findByPk(user_id);
+    if (!userExists) {
+      return res.status(404).json({
+        message: "El usuario especificado en user_id no existe",
+      });
+    }
+
+
+    const existingTask = await TaskModel.findOne({
       where: { title },
     });
 
@@ -77,10 +107,11 @@ export const createTask = async (req, res) => {
       });
     }
 
-    const task = await Task.create({
+    const task = await TaskModel.create({
       title: title.trim(),
       description: description.trim(),
       isComplete,
+      user_id,
     });
 
     return res.status(201).json({
@@ -98,9 +129,9 @@ export const createTask = async (req, res) => {
 export const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, isComplete } = req.body;
+    const { title, description, isComplete, user_id } = req.body;
 
-    const task = await Task.findByPk(id);
+    const task = await TaskModel.findByPk(id);
 
     if (!task) {
       return res.status(404).json({
@@ -135,7 +166,8 @@ export const updateTask = async (req, res) => {
         message: "isComplete debe ser un valor booleano",
       });
     }
-    const existingTask = await Task.findOne({
+
+    const existingTask = await TaskModel.findOne({
       where: { title },
     });
 
@@ -149,6 +181,7 @@ export const updateTask = async (req, res) => {
       title: title.trim(),
       description: description.trim(),
       isComplete,
+      ...(user_id && { user_id }),
     });
 
     return res.status(200).json({
@@ -167,7 +200,7 @@ export const deleteTask = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const task = await Task.findByPk(id);
+    const task = await TaskModel.findByPk(id);
 
     if (!task) {
       return res.status(404).json({
