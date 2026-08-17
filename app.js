@@ -5,6 +5,8 @@ import { TaskModel } from "./src/models/task.model.js";
 
 import userRoutes from "./src/routes/user.routes.js";
 import taskRoutes from "./src/routes/task.routes.js";
+import profileRoutes from "./src/routes/profile.routes.js";
+import tagRoutes from "./src/routes/tag.routes.js";
 
 const app = express();
 const PORT = 3000;
@@ -13,6 +15,8 @@ app.use(express.json());
 
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/profiles", profileRoutes);
+app.use("/api/tags", tagRoutes);
 
 try {
     await baseDatos.authenticate();
