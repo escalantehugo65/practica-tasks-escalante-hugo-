@@ -16,13 +16,6 @@ export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await User.findByPk(id);
-
-    if (!user) {
-      return res.status(404).json({
-        message: "Usuario no encontrado",
-      });
-    }
-
     return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({
@@ -33,9 +26,7 @@ export const getUserById = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-    console.log("--> LLEGÓ LA PETICIÓN POST A CREATE USER");
     try {
-        console.log("Probando si User existe:", User);
         const { name, email, password } = req.body;
 
         const user = await User.create({
@@ -64,37 +55,8 @@ export const updateUser = async (req, res) => {
 
     const user = await User.findByPk(id);
 
-    if (!user) {
-      return res.status(404).json({
-        message: "Usuario no encontrado",
-      });
-    }
-
-    if (!name || typeof name !== "string" || name.trim() === "" || name.length > 100) {
-      return res.status(400).json({
-        message: "El nombre debe ser una cadena no vacía de máximo 100 caracteres",
-      });
-    }
-
-    if (!email || typeof email !== "string" || email.trim() === "" || email.length > 100) {
-      return res.status(400).json({
-        message: "El email debe ser una cadena no vacía de máximo 100 caracteres",
-      });
-    }
-
-    if (!password || typeof password !== "string" || password.trim() === "" || password.length > 100) {
-      return res.status(400).json({
-        message: "La contraseña debe ser una cadena no vacía de máximo 100 caracteres",
-      });
-    }
-
     const existingUser = await User.findOne({ where: { email } });
 
-    if (existingUser && existingUser.id !== user.id) {
-      return res.status(400).json({
-        message: "El email ya está registrado por otro usuario",
-      });
-    }
 
     await user.update({
       name: name.trim(),
@@ -119,12 +81,6 @@ export const deleteUser = async (req, res) => {
     const { id } = req.params;
 
     const user = await User.findByPk(id);
-
-    if (!user) {
-      return res.status(404).json({
-        message: "Usuario no encontrado",
-      });
-    }
 
     await user.destroy();
 

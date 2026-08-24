@@ -24,27 +24,6 @@ export const getProfiles = async (req, res) => {
 export const createProfile = async (req, res) => {
   try {
     const { bio, phone, user_id } = req.body;
-
-    if (!user_id) {
-      return res.status(400).json({
-        message: "El user_id es obligatorio",
-      });
-    }
-
-    const user = await User.findByPk(user_id);
-    if (!user) {
-      return res.status(404).json({
-        message: "El usuario asociado no existe",
-      });
-    }
-
-    const existingProfile = await Profile.findOne({ where: { user_id } });
-    if (existingProfile) {
-      return res.status(400).json({
-        message: "Este usuario ya cuenta con un perfil asignado",
-      });
-    }
-
     const profile = await Profile.create({
       bio: bio || null,
       phone: phone || null,

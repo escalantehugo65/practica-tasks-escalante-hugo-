@@ -25,13 +25,6 @@ export const getTags = async (req, res) => {
 export const createTag = async (req, res) => {
   try {
     const { name } = req.body;
-
-    if (!name || typeof name !== "string" || name.trim() === "") {
-      return res.status(400).json({
-        message: "El nombre de la etiqueta es obligatorio",
-      });
-    }
-
     const tag = await Tag.create({ name: name.trim() });
 
     return res.status(201).json({

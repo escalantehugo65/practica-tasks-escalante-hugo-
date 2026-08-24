@@ -8,7 +8,7 @@ export const getTasks = async (req, res) => {
         {
           model: UserModel,
           as: "author",
-          attributes: ["id", "username", "email"], // Ajustá los campos según tu UserModel
+          attributes: ["id", "username", "email"],
         },
       ],
     });
@@ -36,12 +36,6 @@ export const getTaskById = async (req, res) => {
       ],
     });
 
-    if (!task) {
-      return res.status(404).json({
-        message: "Tarea no encontrada",
-      });
-    }
-
     return res.status(200).json(task);
   } catch (error) {
     return res.status(500).json({
@@ -54,58 +48,13 @@ export const getTaskById = async (req, res) => {
 export const createTask = async (req, res) => {
   try {
     const { title, description, isComplete, user_id } = req.body;
-    if (
-      typeof title !== "string" ||
-      title.trim() === "" ||
-      title.length > 100
-    ) {
-      return res.status(400).json({
-        message:
-          "El título debe ser una cadena no vacía de máximo 100 caracteres",
-      });
-    }
-
-    if (
-      typeof description !== "string" ||
-      description.trim() === "" ||
-      description.length > 100
-    ) {
-      return res.status(400).json({
-        message:
-          "La descripción debe ser una cadena no vacía de máximo 100 caracteres",
-      });
-    }
-
-    if (typeof isComplete !== "boolean") {
-      return res.status(400).json({
-        message: "isComplete debe ser un valor booleano",
-      });
-    }
-
-    if (!user_id || typeof user_id !== "number") {
-      return res.status(400).json({
-        message: "El user_id es obligatorio y debe ser un número entero",
-      });
-    }
-
 
     const userExists = await UserModel.findByPk(user_id);
-    if (!userExists) {
-      return res.status(404).json({
-        message: "El usuario especificado en user_id no existe",
-      });
-    }
-
 
     const existingTask = await TaskModel.findOne({
       where: { title },
     });
 
-    if (existingTask) {
-      return res.status(400).json({
-        message: "Ya existe una tarea con ese título",
-      });
-    }
 
     const task = await TaskModel.create({
       title: title.trim(),
@@ -133,49 +82,9 @@ export const updateTask = async (req, res) => {
 
     const task = await TaskModel.findByPk(id);
 
-    if (!task) {
-      return res.status(404).json({
-        message: "Tarea no encontrada",
-      });
-    }
-
-    if (
-      typeof title !== "string" ||
-      title.trim() === "" ||
-      title.length > 100
-    ) {
-      return res.status(400).json({
-        message:
-          "El título debe ser una cadena no vacía de máximo 100 caracteres",
-      });
-    }
-
-    if (
-      typeof description !== "string" ||
-      description.trim() === "" ||
-      description.length > 100
-    ) {
-      return res.status(400).json({
-        message:
-          "La descripción debe ser una cadena no vacía de máximo 100 caracteres",
-      });
-    }
-
-    if (typeof isComplete !== "boolean") {
-      return res.status(400).json({
-        message: "isComplete debe ser un valor booleano",
-      });
-    }
-
     const existingTask = await TaskModel.findOne({
       where: { title },
     });
-
-    if (existingTask && existingTask.id !== task.id) {
-      return res.status(400).json({
-        message: "Ya existe otra tarea con ese título",
-      });
-    }
 
     await task.update({
       title: title.trim(),
@@ -201,12 +110,6 @@ export const deleteTask = async (req, res) => {
     const { id } = req.params;
 
     const task = await TaskModel.findByPk(id);
-
-    if (!task) {
-      return res.status(404).json({
-        message: "Tarea no encontrada",
-      });
-    }
 
     await task.destroy();
 
