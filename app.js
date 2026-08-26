@@ -2,6 +2,8 @@ import express from "express";
 import baseDatos from "./src/config/database.js";
 import { UserModel } from "./src/models/user.model.js";
 import { TaskModel } from "./src/models/task.model.js";
+import { TagModel } from "./src/models/tag.model.js";
+import { ProfileModel } from "./src/models/profile.model.js";
 
 import userRoutes from "./src/routes/user.routes.js";
 import taskRoutes from "./src/routes/task.routes.js";

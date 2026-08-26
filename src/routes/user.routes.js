@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {body, param}  from 'express-validator';
 import { validateResult } from "../middlewares/validator.middleware.js";
-import { UserModel } from "../models/user.model.js";
+import { UserModel as User} from "../models/user.model.js";
 import {
     getUsers,
     getUserById,
@@ -9,6 +9,7 @@ import {
     updateUser,
     deleteUser
 } from "../controllers/users.controller.js";
+
 const router = Router();
 
 const validateId = [
